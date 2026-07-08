@@ -943,7 +943,7 @@ deck.addEventListener('scroll', ()=>{
     const coeffs = getCoeffs(muR);
 
     // Draw Field Lines
-    const N = 26;
+    const N = 100;
     for(let i=0;i<=N;i++){
       const x0 = -Xmax + (Xmax*2)*i/N;
       const pts = traceLine(x0, -Zmax, coeffs, 1, 800, 0.02);
@@ -956,12 +956,12 @@ deck.addEventListener('scroll', ()=>{
       // Determine line color based on proximity to center (visual flare)
       const dist = Math.abs(x0);
       if (dist < a) {
-         ctx.strokeStyle = `rgba(255, 194, 89, ${0.4 + 0.3*Math.min(1, muR/10)})`; // lines that get deflected light up
+         ctx.strokeStyle = `rgba(255, 194, 89, ${0.4 + 0.4*Math.min(1, muR/10)})`; // lines that get deflected light up
       } else {
-         ctx.strokeStyle = 'rgba(56,152,255,0.6)';
+         ctx.strokeStyle = 'rgba(56,152,255,0.3)';
       }
       
-      ctx.lineWidth = 1.8;
+      ctx.lineWidth = 1.0;
       ctx.stroke();
     }
 
