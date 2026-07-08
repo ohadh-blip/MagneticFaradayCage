@@ -307,7 +307,7 @@ input[type=range]::-webkit-slider-thumb:hover{
         הגנה מפני שדות אלקטרומגנטיים: מדוע כלוב פאראדיי קלאסי נכשל בתדרים נמוכים, וכיצד קליפה מגנטית עוקפת את הבעיה?
       </p>
       <div style="margin-top:3rem;display:flex;flex-direction:column;gap:.6rem;align-items:center;">
-        <div style="font-family:var(--font-mono);font-size:1.6rem;color:var(--text);">עומר בהרל &nbsp;·&nbsp; אוהד חפץ</div>
+        <div style="font-family:var(--font-mono);font-size:1.6rem;color:var(--text);">אוהד חפץ &nbsp;·&nbsp; עומר בהרל</div>
         <div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--text-muted);">קבוצה 11</div>
       </div>
     </div>
@@ -985,7 +985,7 @@ deck.addEventListener('scroll', ()=>{
     const coeffs = getCoeffs(muR);
 
     // Draw Field Lines
-    const N = 100;
+    const N = 86;
     for(let i=0;i<=N;i++){
       const x0 = -Xmax + (Xmax*2)*i/N;
       const pts = traceLine(x0, -Zmax, coeffs, 1, 800, 0.02);
@@ -998,12 +998,13 @@ deck.addEventListener('scroll', ()=>{
       // Determine line color based on proximity to center (visual flare)
       const dist = Math.abs(x0);
       if (dist < a) {
-         ctx.strokeStyle = `rgba(255, 194, 89, ${0.4 + 0.4*Math.min(1, muR/10)})`; // lines that get deflected light up
+         ctx.strokeStyle = 'rgba(251, 191, 36, 1.0)'; // crisp, elegant amber
+         ctx.lineWidth = 1.0;
       } else {
-         ctx.strokeStyle = 'rgba(56,152,255,0.3)';
+         ctx.strokeStyle = 'rgba(59, 130, 246, 1.0)'; // refined, deep electric blue
+         ctx.lineWidth = 2.0;
       }
       
-      ctx.lineWidth = 1.0;
       ctx.stroke();
     }
 
