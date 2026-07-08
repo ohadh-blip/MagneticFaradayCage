@@ -349,6 +349,9 @@ input[type=range]::-webkit-slider-thumb:hover{
           <div class="panel">
             <h3 style="margin:0 0 0.8rem; font-family:var(--font-display); font-size:1.6rem; color:var(--north);">כישלון בשדות סטטיים</h3>
             <p class="muted" style="font-size:1.3rem;">חומרים בעלי מוליכות גבוהה כגון נחושת או אלומיניום, שחדירותם <span class="tex">\mu_r \approx 1</span>, יעילים רק נגד קרינת רדיו (RF). לשדות מגנטיים סטטיים הם <span class="highlight-text">שקופים לחלוטין</span>.</p>
+            <div style="margin-top:1.2rem; padding-top:1.2rem; border-top:1px solid rgba(255,255,255,0.1);">
+              <p class="muted" style="font-size:1.1rem; line-height:1.5;">קרינת תדר רדיו (RF) משרה זרמי מערבולת במוליך (חוק פאראדיי). זרמים אלו מייצרים שדה נגדי המבטל את השדה הפוגע (חוק לנץ). שדה מגנטי סטטי אינו משתנה בזמן, ולכן חולף באין מפריע.</p>
+            </div>
           </div>
           <p class="muted">השאלה המרכזית: האם ביכולתנו לייצר סיכוך מגנטי פסיבי באותה יעילות?</p>
         </div>
@@ -773,7 +776,7 @@ deck.addEventListener('scroll', ()=>{
   const canvas = document.getElementById('canvas-problem');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
-  let w,h,t=0;
+  let w,h,t=0, eddyAngle=0;
   function resize(){
     const rect = canvas.parentElement.getBoundingClientRect();
     w = canvas.width = rect.width * 2;
@@ -813,6 +816,36 @@ deck.addEventListener('scroll', ()=>{
     }
     ctx.stroke();
     ctx.fillStyle = '#3898ff'; ctx.font="14px Rubik"; ctx.textAlign="left"; ctx.fillText("גלי רדיו (RF)", 20, h*0.15);
+    
+    // Eddy currents visualization (Lenz's Law)
+    const phaseAtBarrier = meshX*0.1 - t*3;
+    const eddyIntensity = Math.cos(phaseAtBarrier); 
+    eddyAngle += eddyIntensity * 0.15;
+    
+    ctx.lineWidth = 1.5;
+    for(let i=-1; i<=1; i++) {
+        const ey = h*0.25 + i*28;
+        const radius = 7 + Math.abs(eddyIntensity)*4;
+        
+        ctx.strokeStyle = `rgba(168, 178, 209, ${0.2 + 0.7*Math.abs(eddyIntensity)})`; 
+        ctx.beginPath();
+        ctx.arc(meshX, ey, radius, 0, Math.PI*2);
+        ctx.stroke();
+        
+        const arrowX = meshX + Math.cos(eddyAngle + i*Math.PI/3)*radius;
+        const arrowY = ey + Math.sin(eddyAngle + i*Math.PI/3)*radius;
+        
+        ctx.save();
+        ctx.translate(arrowX, arrowY);
+        ctx.rotate(eddyAngle + i*Math.PI/3 + (eddyIntensity > 0 ? Math.PI/2 : -Math.PI/2));
+        ctx.beginPath();
+        ctx.moveTo(0, -3);
+        ctx.lineTo(4, 4);
+        ctx.lineTo(-4, 4);
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.fill();
+        ctx.restore();
+    }
     
     // Bottom Half: Static Field (Passing through)
     ctx.strokeStyle = '#ff4d60';
