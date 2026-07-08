@@ -607,8 +607,8 @@ function goTo(i){
   i = Math.max(0, Math.min(slides.length-1, i));
   slides[i].scrollIntoView({behavior:'smooth'});
 }
-prevBtn.addEventListener('click', ()=> goTo(current+1)); 
-nextBtn.addEventListener('click', ()=> goTo(current-1));
+prevBtn.addEventListener('click', ()=> goTo(current-1)); 
+nextBtn.addEventListener('click', ()=> goTo(current+1));
 
 window.addEventListener('keydown', (e)=>{
   if(['ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); goTo(current+1); }
