@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כלוב פאראדיי - מגנטי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Rubik:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --bg-deep:#050810;
+  --bg-panel:#0f182b;
+  --bg-panel-2:#14223d;
+  --line:#233554;
+  --text:#f8faff;
+  --text-muted:#a8b2d1;
+  --north:#ff4d60;
+  --south:#3898ff;
+  --amber:#ffc259;
+  --font-display:'Rubik', sans-serif;
+  --font-body:'Heebo', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg-deep);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow:hidden;
+  height:100vh;
+  width:100vw;
+  font-size: 1.15rem;
+}
+
+/* ---------- background field texture ---------- */
+#bg-field{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.4;
+}
+
+/* ---------- slide deck ---------- */
+#deck{
+  position:relative;z-index:1;
+  height:100vh;width:100vw;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;
+}
+.slide{
+  height:100vh;width:100vw;
+  scroll-snap-align:start;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;
+  padding:5vh 6vw;
+}
+.slide-inner{
+  max-width:1400px;
+  width:100%;
+  display:flex;flex-direction:column;gap:1.8rem;
+}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:1.1rem;letter-spacing:.12em;
+  color:var(--amber);
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:.8rem;
+}
+.eyebrow::before{
+  content:"";width:32px;height:2px;background:var(--amber);display:inline-block;
+}
+h1.slide-title{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:clamp(3.5rem, 6vw, 5.5rem);
+  line-height:1.1;
+  margin:0;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+h2.slide-title{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.5rem, 4vw, 3.8rem);
+  margin:0 0 .5rem 0;
+}
+.slide-subtitle{
+  color:var(--text-muted);
+  font-size:clamp(1.4rem, 2vw, 1.8rem);
+  font-weight:400;
+  margin:0;
+}
+p{
+  line-height:1.6;
+  font-size:1.45rem;
+  color:#ccd6f6;
+  margin:0;
+  text-align:start;
+}
+.muted{color:var(--text-muted);}
+.highlight-text{color:var(--amber);font-weight:700;}
+
+/* ---------- nav dots ---------- */
+#nav-dots{
+  position:fixed;top:50%;transform:translateY(-50%);
+  left:30px;z-index:20;
+  display:flex;flex-direction:column;gap:18px;
+}
+.nav-dot{
+  width:12px;height:12px;border-radius:50%;
+  background:transparent;border:2px solid var(--line);
+  cursor:pointer;transition:all .25s;
+  padding:0;
+}
+.nav-dot.active{
+  background:var(--amber);border-color:var(--amber);
+  transform:scale(1.4);
+  box-shadow: 0 0 12px rgba(255,194,89,0.4);
+}
+.nav-dot:hover{border-color:var(--amber);}
+
+/* ---------- arrows ---------- */
+#nav-arrows{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  z-index:20;display:flex;gap:24px;align-items:center;
+  font-family:var(--font-mono);color:var(--text-muted);font-size:1rem;
+}
+.nav-arrow-btn{
+  background:rgba(255,255,255,.05);
+  border:2px solid var(--line);
+  color:var(--text);
+  width:50px;height:50px;border-radius:50%;
+  cursor:pointer;font-size:1.4rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.nav-arrow-btn:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,194,89,0.1);}
+.nav-arrow-btn:disabled{opacity:.25;cursor:default;}
+
+/* ---------- slide index badge ---------- */
+#slide-counter{
+  position:fixed;top:30px;left:30px;z-index:20;
+  font-family:var(--font-mono);font-size:1rem;color:var(--text-muted);
+}
+#slide-counter b{color:var(--amber);font-weight:700;font-size:1.2rem;}
+
+/* ---------- cards / panels ---------- */
+.panel{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-2));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:2rem;
+  box-shadow: 0 12px 30px -15px rgba(0,0,0,0.7);
+}
+.eq-box{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:1.4rem 2rem;
+  display:flex;align-items:center;justify-content:center;
+  direction:ltr;
+  unicode-bidi: isolate;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+}
+.eq-box.highlight{
+  border-color:var(--amber);
+  box-shadow:0 0 0 2px rgba(255,194,89,.2), 0 15px 35px -10px rgba(255,194,89,.15);
+}
+.katex{font-size:1.4em;}
+.tex {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+/* ---------- bc list (boundary conditions) ---------- */
+.bc-row{
+  display:grid;grid-template-columns:54px 1fr;gap:1.5rem;
+  align-items:flex-start;
+  padding:1.4rem 0;
+  border-bottom:1px solid var(--line);
+}
+.bc-row:last-child{border-bottom:none;}
+.bc-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--bg-panel-2);border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);color:var(--amber);font-size:1.2rem;
+}
+.bc-eq{direction:ltr;text-align:right;margin-bottom:.5rem;}
+.bc-caption{color:var(--text-muted);font-size:1.2rem;line-height:1.5;}
+
+/* ---------- multi column layout ---------- */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;align-items:stretch;}
+@media(max-width:1024px){.cols{grid-template-columns:1fr;} .cols-3{grid-template-columns:1fr;}}
+
+/* ---------- comparison cards (conclusion) ---------- */
+.compare{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;align-items:center;}
+@media(max-width:1024px){.compare{grid-template-columns:1fr;}}
+.compare-connector{
+  font-family:var(--font-mono);font-size:1.1rem;color:var(--text-muted);
+  text-align:center;max-width:180px;line-height:1.5;
+}
+.card{
+  border-radius:20px;padding:2.2rem;
+  border:1px solid var(--line);
+  height:100%;
+}
+.card.north{background:radial-gradient(circle at 30% 0%, rgba(255,77,96,.12), var(--bg-panel));border-color:rgba(255,77,96,.3);}
+.card.south{background:radial-gradient(circle at 30% 0%, rgba(56,152,255,.12), var(--bg-panel));border-color:rgba(56,152,255,.3);}
+.card h3{font-family:var(--font-display);margin:.3rem 0 .8rem;font-size:2rem;}
+.card .tag{font-family:var(--font-mono);font-size:.95rem;letter-spacing:.08em;color:var(--text-muted);text-transform:uppercase;}
+.card .stat{font-family:var(--font-mono);font-size:2.2rem;margin:.8rem 0; font-weight:700;}
+.card.north .stat{color:var(--north);}
+.card.south .stat{color:var(--south);}
+
+/* ---------- interactive animations ---------- */
+.anim-box {
+  width: 100%; aspect-ratio: 16/9;
+  border-radius: 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+}
+.anim-label {
+  position:absolute; top:1rem; right:1.5rem;
+  font-family:var(--font-mono); font-size:1rem; color:var(--text-muted);
+  background:rgba(15,24,43,0.8); padding:0.3rem 0.8rem; border-radius:8px; border:1px solid var(--line);
+}
+
+/* ---------- slide 7 interactive simulation ---------- */
+.sim-wrap{display:grid;grid-template-columns:1.3fr 0.7fr;gap:3rem;align-items:center;}
+@media(max-width:1100px){.sim-wrap{grid-template-columns:1fr;}}
+#fieldCanvas{
+  width:100%;
+  max-width:55vh;
+  max-height:55vh;
+  object-fit:contain;
+  aspect-ratio:1/1;border-radius:20px;
+  background:radial-gradient(circle at 50% 45%,#0c1424,#050810 75%);
+  border:1px solid var(--line);
+  box-shadow: 0 15px 40px -10px rgba(0,0,0,0.8);
+}
+.slider-row{margin-bottom:1.8rem;}
+.slider-row label{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:1.1rem;color:var(--text-muted);margin-bottom:.8rem;}
+.slider-row label b{color:var(--amber);font-weight:700;}
+input[type=range]{
+  width:100%;-webkit-appearance:none;height:6px;border-radius:3px;
+  background:var(--line);outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--amber);cursor:pointer;border:3px solid #060a13;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover{
+  transform:scale(1.2);
+}
+.preset-chips{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+.chip{
+  padding:.6rem 1.2rem;border-radius:30px;font-size:1rem;
+  background:var(--bg-panel);border:1px solid var(--line);color:var(--text-muted);
+  cursor:pointer;font-family:var(--font-mono); transition:all .2s;
+}
+.chip:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,194,89,0.1);}
+.readout{
+  display:flex;gap:2rem;margin-top:.5rem;
+}
+.readout .item{flex:1;}
+.readout .val{font-family:var(--font-mono);font-size:2rem;color:var(--amber);font-weight:700;}
+.readout .lbl{font-size:1.05rem;color:var(--text-muted);margin-top:0.3rem;}
+
+/* scrollbar hide */
+#deck::-webkit-scrollbar{display:none;}
+#deck{-ms-overflow-style:none;scrollbar-width:none;}
+
+</style>
+</head>
+<body>
+
+<canvas id="bg-field"></canvas>
+
+<div id="slide-counter"><b id="counter-cur">01</b> / 09</div>
+
+<div id="nav-dots"></div>
+
+<div id="nav-arrows">
+  <button class="nav-arrow-btn" id="prevBtn" aria-label="הקודם">↑</button>
+  <span id="nav-label" style="min-width: 60px; text-align: center;">גללו</span>
+  <button class="nav-arrow-btn" id="nextBtn" aria-label="הבא">↓</button>
+</div>
+
+<div id="deck">
+
+  <!-- SLIDE 1 - HERO -->
+  <section class="slide" id="slide-1">
+    <div class="slide-inner" style="text-align:center;align-items:center;">
+      <div class="eyebrow" style="margin:0 auto;">פרויקט שדות מגנטיים · אלקטרומגנטיות</div>
+      <h1 class="slide-title">כלוב פאראדיי<br><span style="color:var(--amber);">- מגנטי</span></h1>
+      <p class="slide-subtitle" style="max-width:800px;margin:1rem auto 0; line-height:1.5;">
+        הגנה מפני שדות אלקטרומגנטיים: מדוע כלוב פאראדיי קלאסי נכשל בתדרים נמוכים, וכיצד קליפה מגנטית עוקפת את הבעיה?
+      </p>
+      <div style="margin-top:3rem;display:flex;flex-direction:column;gap:.6rem;align-items:center;">
+        <div style="font-family:var(--font-mono);font-size:1.3rem;color:var(--text);">עומר בהרל &nbsp;·&nbsp; אוהד חפץ</div>
+        <div style="font-family:var(--font-mono);font-size:1.1rem;color:var(--text-muted);">קבוצה 11</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 - ELECTRIC FARADAY CAGE -->
+  <section class="slide" id="slide-2">
+    <div class="slide-inner">
+      <div class="eyebrow">העיקרון החשמלי</div>
+      <h2 class="slide-title">הגנה מפני שדות חשמליים</h2>
+      <div class="cols">
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <p>כלוב פאראדיי קלאסי, העשוי מחומר מוליך (כמו נחושת), מבטל לחלוטין שדות חשמליים בתוכו.</p>
+          <p class="muted">כאשר הכלוב נחשף לשדה חשמלי חיצוני, המטענים החופשיים במוליך <span class="highlight-text">מסתדרים מחדש באופן מיידי</span> על פני המעטפת.</p>
+          <div class="panel" style="margin-top:0.5rem;">
+            <p style="font-size:1.3rem;"><b style="color:var(--amber);">התוצאה:</b> השדה המושרה מהמטענים מבטל בדיוק את השדה החיצוני. השדה החשמלי בתוך החלל הפנימי הוא תמיד אפס.</p>
+          </div>
+        </div>
+        <div class="anim-box" id="anim-electric" style="aspect-ratio: 4/3;">
+          <div class="anim-label">אנימציה: השראת מטענים E-Field</div>
+          <canvas id="canvas-electric" style="width:100%; height:100%;"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 - THE ENGINEERING PROBLEM -->
+  <section class="slide" id="slide-3">
+    <div class="slide-inner">
+      <div class="eyebrow">הבעיה ההנדסית</div>
+      <h2 class="slide-title">מדוע כלוב פאראדיי מגנטי נכשל?</h2>
+      <div class="cols">
+        <div class="anim-box" id="anim-problem" style="aspect-ratio: 4/3;">
+          <div class="anim-label">אנימציה: תדר גבוה לעומת שדה סטטי</div>
+          <canvas id="canvas-problem" style="width:100%; height:100%;"></canvas>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <p>המטרה ההנדסית היא ליצור אזור במרחב בו <span class="tex">B \approx 0</span>, ללא תלות בתדר — למשל להגנה על רכיבים רגישים במכשירי MRI.</p>
+          <div class="panel">
+            <h3 style="margin:0 0 0.8rem; font-family:var(--font-display); font-size:1.6rem; color:var(--north);">כישלון בשדות סטטיים</h3>
+            <p class="muted" style="font-size:1.3rem;">חומרים בעלי מוליכות גבוהה כגון נחושת או אלומיניום, שחדירותם <span class="tex">\mu_r \approx 1</span>, יעילים רק נגד קרינת רדיו (RF). לשדות מגנטיים סטטיים הם <span class="highlight-text">שקופים לחלוטין</span>.</p>
+          </div>
+          <p class="muted">השאלה המרכזית: האם ביכולתנו לייצר סיכוך מגנטי פסיבי באותה יעילות?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 - PHYSICAL MODEL -->
+  <section class="slide" id="slide-4">
+    <div class="slide-inner">
+      <div class="eyebrow">המודל הפיזיקלי</div>
+      <h2 class="slide-title">קליפה כדורית בשדה חיצוני אחיד</h2>
+      <div class="cols">
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <p>נבחן קליפה כדורית בעלת רדיוס פנימי <span class="tex">a</span> ורדיוס חיצוני <span class="tex">b</span>, עשויה חומר מגנטי בעל פרמאביליות <span class="tex">\mu \gg \mu_0</span> (למשל סגסוגת Mu-Metal).</p>
+          <p class="muted">הקליפה נמצאת בתוך שדה מגנטי חיצוני אחיד המכוון לציר Z: <span class="tex">B_{out} = B_0 \hat{z}</span>.</p>
+          <div class="eq-box" style="margin-top:0.5rem;">
+            <span class="tex">\nabla^2 \Phi_m = 0 \quad \text{(ללא זרמים חופשיים)}</span>
+          </div>
+          <p>המטרה: למצוא את הפוטנציאל הסקלרי <span class="tex">\Phi_m</span> ולהוכיח כי השדה בפנים החלל מונחת.</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center; padding:2rem; background:var(--bg-panel); border:1px solid var(--line); border-radius:20px;">
+          <svg viewBox="0 0 320 320" width="100%" style="max-width:400px; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));">
+            <defs>
+              <radialGradient id="shellGrad" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#3898ff" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#0f182b" stop-opacity="0.9"/>
+              </radialGradient>
+            </defs>
+            <circle cx="160" cy="160" r="110" fill="url(#shellGrad)" stroke="var(--south)" stroke-width="2"/>
+            <circle cx="160" cy="160" r="60" fill="var(--bg-panel)" stroke="var(--south)" stroke-width="2"/>
+            
+            <line x1="160" y1="160" x2="202" y2="118" stroke="#a8b2d1" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="185" y="152" fill="#f8faff" font-size="18" font-family="Rubik, sans-serif" font-style="italic">a</text>
+            
+            <line x1="160" y1="160" x2="265" y2="128" stroke="#a8b2d1" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="235" y="156" fill="#f8faff" font-size="18" font-family="Rubik, sans-serif" font-style="italic">b</text>
+            
+            <text x="120" y="240" fill="#f8faff" font-size="22" font-family="Rubik, sans-serif" font-style="italic">μ</text>
+            <text x="145" y="166" fill="#a8b2d1" font-size="18" font-family="JetBrains Mono, monospace">μ₀</text>
+            
+            <g stroke="var(--south)" stroke-width="3" fill="var(--south)">
+              <line x1="60" y1="310" x2="60" y2="280"/><polygon points="60,272 54,285 66,285"/>
+              <line x1="100" y1="310" x2="100" y2="280"/><polygon points="100,272 94,285 106,285"/>
+              <line x1="220" y1="310" x2="220" y2="280"/><polygon points="220,272 214,285 226,285"/>
+              <line x1="260" y1="310" x2="260" y2="280"/><polygon points="260,272 254,285 266,285"/>
+              <line x1="160" y1="310" x2="160" y2="280"/><polygon points="160,272 154,285 166,285"/>
+            </g>
+            <text x="25" y="295" fill="var(--south)" font-size="20" font-family="JetBrains Mono, monospace">B₀</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 - MATH 1 -->
+  <section class="slide" id="slide-5">
+    <div class="slide-inner">
+      <div class="eyebrow">פיתוח מתמטי</div>
+      <h2 class="slide-title">מממשוואות מקסוול למשוואת לפלס</h2>
+      <p class="muted">המעבר מפיזיקה למתמטיקה מתבסס על היעדר זרמים חופשיים.</p>
+      
+      <div style="display:flex; flex-direction:column; gap:1.5rem; margin-top:1rem;">
+        <div class="panel" style="padding:1.5rem 2rem;">
+          <p><span class="highlight-text">הנחת עבודה (מגנטוסטטיקה):</span> אין זרמים חופשיים באזור. לכן הרוטור מתאפס:</p>
+          <div class="eq-box" style="margin-top:1rem; padding:1rem;"><span class="tex">\nabla \times H = 0</span></div>
+        </div>
+        
+        <div class="panel" style="padding:1.5rem 2rem;">
+          <p><span class="highlight-text">פוטנציאל סקלרי:</span> מכיוון שהרוטור מתאפס, ניתן להגדיר פוטנציאל מגנטי סקלרי:</p>
+          <div class="eq-box" style="margin-top:1rem; padding:1rem;"><span class="tex">H = -\nabla \Phi_m</span></div>
+        </div>
+        
+        <div class="panel" style="padding:1.5rem 2rem;">
+          <p><span class="highlight-text">משוואת לפלס:</span> חוק גאוס למגנטיות קובע <span class="tex">\nabla \cdot B = 0</span>. בחומר לינארי (<span class="tex">B = \mu H</span>) נקבל:</p>
+          <div class="eq-box" style="margin-top:1rem; padding:1rem;"><span class="tex">\nabla^2 \Phi_m = 0</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 - BOUNDARY CONDITIONS -->
+  <section class="slide" id="slide-6">
+    <div class="slide-inner">
+      <div class="eyebrow">פיתוח מתמטי</div>
+      <h2 class="slide-title">תנאי שפה למודל הקליפה</h2>
+      <p class="muted">כדי לפתור את משוואת לפלס במרחב, נדרוש קיום של 4 תנאי שפה פיזיקליים:</p>
+      
+      <div class="panel" style="margin-top:1rem; padding: 1.5rem 2rem;">
+        <div class="bc-row">
+          <div class="bc-num">1</div>
+          <div>
+            <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;"><span class="tex">\lim_{r\to 0}\Phi_{in}(r,\theta) < \infty</span></div>
+            <div class="bc-caption">הפוטנציאל חייב להישאר סופי (לא מתבדר) במרכז החלל הפנימי.</div>
+          </div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-num">2</div>
+          <div>
+            <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;"><span class="tex">\lim_{r\to \infty}\Phi_{out}(r,\theta) = -H_0 r \cos\theta</span></div>
+            <div class="bc-caption">במרחק רב מהקליפה, השדה המגנטי חוזר להיות שדה אחיד <span class="tex">H_0 \hat{z}</span>.</div>
+          </div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-num">3</div>
+          <div>
+            <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;"><span class="tex">\Phi_{m} \text{ רציף ב- } r=a, r=b</span></div>
+            <div class="bc-caption">רציפות הפוטנציאל הסקלרי בשפות (נובע מרציפות הרכיב המשיקי <span class="tex">H_{tan}</span>).</div>
+          </div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-num">4</div>
+          <div>
+            <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;"><span class="tex">\mu \frac{\partial \Phi_{m}}{\partial r} \text{ רציף ב- } r=a, r=b</span></div>
+            <div class="bc-caption">רציפות הרכיב הניצב של השדה המגנטי (<span class="tex">B_{normal}</span>) במעבר בין החומרים.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 - MATH 2 -->
+  <section class="slide" id="slide-7">
+    <div class="slide-inner">
+      <div class="eyebrow">פיתוח מתמטי</div>
+      <h2 class="slide-title">פתרון 3 אזורים</h2>
+      <div class="cols">
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <p>בגלל הסימטריה המרחבית לאורך ציר Z, הפתרון הכללי של משוואת לפלס קורס לפולינומי לז'נדר מסדר ראשון (<span class="tex">l=1</span>):</p>
+          <div class="eq-box"><span class="tex">\Phi_m(r,\theta) = \left( Ar + \frac{C}{r^2} \right) \cos\theta</span></div>
+          <p class="muted" style="font-size:1.3rem; margin-top:1rem;">החלת 4 תנאי השפה על אזורי הבעיה (מרחב חיצוני, קליפה וחלל פנימי) תספק לנו מערכת של 4 משוואות לינאריות עבור המקדמים A ו-C בכל אזור.</p>
+        </div>
+        
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="panel" style="padding:1.5rem;">
+            <p style="font-size:1.2rem; color:var(--text-muted);">אזור 1 (בחוץ, <span class="tex">r > b</span>):</p>
+            <div class="eq-box" style="padding:0.8rem; margin-top:0.5rem;"><span class="tex">\Phi_{out} = -H_0 r \cos\theta + \frac{C_{out}}{r^2}\cos\theta</span></div>
+          </div>
+          <div class="panel" style="padding:1.5rem; border-color:var(--south);">
+            <p style="font-size:1.2rem; color:var(--text-muted);">אזור 2 (בתוך הקליפה, <span class="tex">a < r < b</span>):</p>
+            <div class="eq-box" style="padding:0.8rem; margin-top:0.5rem;"><span class="tex">\Phi_{shell} = \left( A_{sh} r + \frac{C_{sh}}{r^2} \right)\cos\theta</span></div>
+          </div>
+          <div class="panel" style="padding:1.5rem;">
+            <p style="font-size:1.2rem; color:var(--text-muted);">אזור 3 (החלל הפנימי, <span class="tex">r < a</span>):</p>
+            <div class="eq-box" style="padding:0.8rem; margin-top:0.5rem;"><span class="tex">\Phi_{in} = A_{in} r \cos\theta</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 - INTERACTIVE FIELD DIAGRAM -->
+  <section class="slide" id="slide-8">
+    <div class="slide-inner" style="max-width:1500px;">
+      <div class="eyebrow">סימולציית קליפה מגנטית</div>
+      <h2 class="slide-title">שנו את הפרמאביליות וצפו ב"ניתוב מחדש" של השטף</h2>
+      <div class="sim-wrap" style="margin-top:1rem;">
+        <canvas id="fieldCanvas" width="800" height="800"></canvas>
+        <div>
+          <div class="slider-row">
+            <label>חדירות יחסית של הקליפה &nbsp;<span class="tex">\mu_r</span> &nbsp;<b id="muVal">100</b></label>
+            <input type="range" id="muSlider" min="0" max="5.5" step="0.01" value="2">
+          </div>
+          <div class="preset-chips">
+            <button class="chip" data-mu="1">ואקום / נחושת (μr=1)</button>
+            <button class="chip" data-mu="200">פלדה (μr≈200)</button>
+            <button class="chip" data-mu="5000">פרמלוי (μr≈5,000)</button>
+            <button class="chip" data-mu="100000">מו-מטאל (μr≈100,000)</button>
+          </div>
+          <div class="panel">
+            <div class="readout">
+              <div class="item">
+                <div class="val" id="hinVal">1.00×B₀</div>
+                <div class="lbl">B פנימי / B₀</div>
+              </div>
+              <div class="item">
+                <div class="val" id="shieldVal">0%</div>
+                <div class="lbl">יעילות הנחתה</div>
+              </div>
+            </div>
+            <p class="muted" style="margin-top:1.5rem;font-size:1.2rem; line-height:1.5;">הסימולציה פותרת מתמטית את המשוואות. צפו כיצד קווי השדה <b>נשאבים אל תוך הקליפה</b> מכיוון שהיא מהווה מסלול בעל התנגדות מגנטית (Reluctance) נמוכה יותר, ועוקפים לחלוטין את החלל הפנימי.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 - CONCLUSION -->
+  <section class="slide" id="slide-9">
+    <div class="slide-inner">
+      <div class="eyebrow">המסקנה מהפתרון</div>
+      <h2 class="slide-title">ניתוב מחדש של שטף מגנטי</h2>
+      <p class="muted">חישוב עוצמת השדה פנימה <span class="tex">B_{in} = -\mu_0 \nabla \Phi_{in}</span> נותן את התוצאה המקורבת הבאה (עבור <span class="tex">\mu_r \gg 1</span>):</p>
+      
+      <div class="eq-box highlight" style="margin: 1.5rem auto; display:inline-flex; padding: 2rem 4rem;">
+        <span class="tex" style="font-size: 2.2em;">B_{in} \approx \frac{9}{2\mu_r\left[1 - \left(\frac{a}{b}\right)^3\right]} B_0</span>
+      </div>
+
+      <div class="compare" style="margin-top:2rem;">
+        <div class="card north">
+          <div class="tag">כלוב פאראדיי קלאסי (נחושת)</div>
+          <h3><span class="tex">\mu_r = 1</span></h3>
+          <p style="font-size:1.3rem;">הנוסחה מראה ש- <span class="tex">B_{in} = B_0</span>. נחושת לא עושה דבר לשדות מגנטיים סטטיים. אין כל הגנה, והשדה עובר ללא הפרעה.</p>
+        </div>
+        <div class="compare-connector">
+          ⇦&nbsp;&nbsp;מסקנה פיזיקלית&nbsp;&nbsp;⇨
+        </div>
+        <div class="card south">
+          <div class="tag">סיכוך מגנטי פסיבי (Mu-Metal)</div>
+          <h3><span class="tex">\mu_r = 100,000</span></h3>
+          <p style="font-size:1.3rem;">החומר <span class="highlight-text">מקריס את קווי השדה אל תוך הקליפה</span>. קווי השטף בוחרים תמיד במסלול ה-Reluctance הנמוך ביותר, ועוקפים את החלל הפנימי לחלוטין.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ================= TeX auto-render ================= */
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.tex').forEach(function(el){
+    try{
+      katex.render(el.textContent, el, {throwOnError:false, strict: "ignore", displayMode:false});
+    }catch(e){}
+  });
+});
+
+/* ================= Slide navigation ================= */
+const deck = document.getElementById('deck');
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsWrap = document.getElementById('nav-dots');
+const counterCur = document.getElementById('counter-cur');
+const navLabel = document.getElementById('nav-label');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+slides.forEach((s,i)=>{
+  const d = document.createElement('button');
+  d.className = 'nav-dot' + (i===0?' active':'');
+  d.addEventListener('click', ()=> goTo(i));
+  dotsWrap.appendChild(d);
+});
+const dots = Array.from(dotsWrap.children);
+
+let current = 0;
+function setActive(i){
+  current = i;
+  dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
+  counterCur.textContent = String(i+1).padStart(2,'0');
+  navLabel.textContent = i===slides.length-1 ? 'סוף' : 'גללו למטה';
+  prevBtn.disabled = false;
+  nextBtn.disabled = false;
+}
+function goTo(i){
+  i = Math.max(0, Math.min(slides.length-1, i));
+  slides[i].scrollIntoView({behavior:'smooth'});
+}
+prevBtn.addEventListener('click', ()=> goTo(current+1)); 
+nextBtn.addEventListener('click', ()=> goTo(current-1));
+
+window.addEventListener('keydown', (e)=>{
+  if(['ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); goTo(current+1); }
+  if(['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); goTo(current-1); }
+});
+
+let scrollTicking = false;
+function updateActiveFromScroll(){
+  const pos = deck.scrollTop + deck.clientHeight*0.4;
+  let idx = 0;
+  for(let i=0;i<slides.length;i++){
+    if(slides[i].offsetTop <= pos) idx = i;
+  }
+  if(idx !== current) setActive(idx);
+  scrollTicking = false;
+}
+deck.addEventListener('scroll', ()=>{
+  if(!scrollTicking){
+    requestAnimationFrame(updateActiveFromScroll);
+    scrollTicking = true;
+  }
+});
+</script>
+
+<script>
+/* ================= Ambient background field animation ================= */
+(function(){
+  const canvas = document.getElementById('bg-field');
+  const ctx = canvas.getContext('2d');
+  let w,h,t=0;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const lines = [];
+  const N = 18;
+  for(let i=0;i<N;i++){
+    lines.push({
+      offset: i/N,
+      speed: 0.1 + Math.random()*0.1,
+      amp: 50 + Math.random()*80,
+      phase: Math.random()*Math.PI*2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.lineWidth = 1.5;
+    lines.forEach((ln,i)=>{
+      const y0 = ln.offset*h;
+      ctx.beginPath();
+      for(let x=0;x<=w;x+=15){
+        const y = y0 + Math.sin(x*0.004 + t*ln.speed + ln.phase)*ln.amp*0.4;
+        if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      const hue = i%2===0 ? 'rgba(56,152,255,0.12)' : 'rgba(255,77,96,0.08)';
+      ctx.strokeStyle = hue;
+      ctx.stroke();
+    });
+    t += 0.015;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+<script>
+/* ================= Slide 2: Electric Field Animation ================= */
+(function(){
+  const canvas = document.getElementById('canvas-electric');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,t=0;
+  function resize(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    w = canvas.width = rect.width * 2;
+    h = canvas.height = rect.height * 2;
+    ctx.scale(2,2);
+    w /= 2; h /= 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    
+    // Draw Box (Faraday cage)
+    const bw = w*0.4, bh = h*0.4;
+    const bx = w/2 - bw/2, by = h/2 - bh/2;
+    
+    // Electric field lines (left to right)
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    const numLines = 9;
+    for(let i=1; i<=numLines; i++){
+      const y = h * (i/(numLines+1));
+      ctx.beginPath();
+      
+      if (y > by && y < by+bh) {
+        // Line splits and terminates on charges
+        ctx.moveTo(0, y);
+        ctx.lineTo(bx, y);
+        
+        ctx.moveTo(bx+bw, y);
+        ctx.lineTo(w, y);
+        
+        // Draw negative charge on left
+        ctx.fillStyle = '#3898ff';
+        ctx.beginPath(); ctx.arc(bx, y, 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = 'white'; ctx.font="10px Arial"; ctx.fillText("-", bx-3, y+3);
+        
+        // Draw positive charge on right
+        ctx.fillStyle = '#ff4d60';
+        ctx.beginPath(); ctx.arc(bx+bw, y, 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = 'white'; ctx.font="10px Arial"; ctx.fillText("+", bx+bw-3, y+3);
+      } else {
+        // Line goes straight over/under
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+      }
+      ctx.stroke();
+    }
+    
+    // Draw cage stroke
+    ctx.strokeStyle = 'var(--amber)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(bx, by, bw, bh);
+    
+    // Inner text
+    ctx.fillStyle = 'var(--text-muted)';
+    ctx.font = '16px Rubik';
+    ctx.textAlign = 'center';
+    ctx.fillText("E = 0", w/2, h/2+5);
+    
+    // Flowing arrows animation
+    t += 0.03;
+    const arrowX = (t * 50) % w;
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    for(let i=1; i<=numLines; i++){
+        const y = h * (i/(numLines+1));
+        if ((arrowX < bx || arrowX > bx+bw) || (y <= by || y >= by+bh)) {
+            ctx.beginPath();
+            ctx.moveTo(arrowX, y-4);
+            ctx.lineTo(arrowX+8, y);
+            ctx.lineTo(arrowX, y+4);
+            ctx.fill();
+        }
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+<script>
+/* ================= Slide 3: Frequency / RF Animation ================= */
+(function(){
+  const canvas = document.getElementById('canvas-problem');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,t=0;
+  function resize(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    w = canvas.width = rect.width * 2;
+    h = canvas.height = rect.height * 2;
+    ctx.scale(2,2);
+    w /= 2; h /= 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    
+    // Mesh Barrier
+    const meshX = w/2;
+    ctx.strokeStyle = 'rgba(255,194,89, 0.6)';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    for(let y=20; y<h; y+=20){
+        ctx.moveTo(meshX, y);
+        ctx.lineTo(meshX, y+10);
+    }
+    ctx.stroke();
+    
+    // Top Half: RF Wave (bouncing back)
+    ctx.strokeStyle = '#3898ff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for(let x=0; x<meshX; x+=2){
+        const y = h*0.25 + Math.sin(x*0.1 - t*3)*20;
+        if(x==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    // Reflected wave (attenuated)
+    for(let x=meshX; x>0; x-=2){
+        const y = h*0.25 + Math.sin(x*0.1 + t*3)*20;
+        ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#3898ff'; ctx.font="14px Rubik"; ctx.textAlign="left"; ctx.fillText("גלי רדיו (RF)", 20, h*0.15);
+    
+    // Bottom Half: Static Field (Passing through)
+    ctx.strokeStyle = '#ff4d60';
+    ctx.beginPath();
+    const sy = h*0.75;
+    ctx.moveTo(0, sy-20); ctx.lineTo(w, sy-20);
+    ctx.moveTo(0, sy); ctx.lineTo(w, sy);
+    ctx.moveTo(0, sy+20); ctx.lineTo(w, sy+20);
+    ctx.stroke();
+    
+    const arrowX = (t * 50) % w;
+    ctx.fillStyle = '#ff4d60';
+    [-20, 0, 20].forEach(dy => {
+        ctx.beginPath();
+        ctx.moveTo(arrowX, sy+dy-5);
+        ctx.lineTo(arrowX+10, sy+dy);
+        ctx.lineTo(arrowX, sy+dy+5);
+        ctx.fill();
+    });
+    
+    ctx.fillStyle = '#ff4d60'; ctx.fillText("שדה מגנטי סטטי", 20, h*0.65);
+    
+    t += 0.02;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+<script>
+/* ================= Slide 7: Accurate Shell Simulation ================= */
+(function(){
+  const canvas = document.getElementById('fieldCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const muSlider = document.getElementById('muSlider');
+  const muVal = document.getElementById('muVal');
+  const hinVal = document.getElementById('hinVal');
+  const shieldVal = document.getElementById('shieldVal');
+  const chips = document.querySelectorAll('.chip');
+
+  const DPR = Math.min(window.devicePixelRatio||1, 2);
+
+  function fitCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width*DPR;
+    canvas.height = rect.width*DPR; // square
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+
+  const Xmax = 2.4, Zmax = 2.4;
+  const a = 0.6; // inner radius
+  const b = 1.0; // outer radius
+
+  function getCoeffs(muR){
+      if(muR === 1.0) muR = 1.00001; // Avoid divide by zero
+      const ka = 1.0 / (a*a*a);
+      const kb = 1.0 / (b*b*b);
+      const M = ((2*muR + 1)/(muR - 1)) * ka;
+      const denom = M*(muR + 2) - 2*kb*(muR - 1);
+      const B_coeff = -3.0 / denom;
+      const A_coeff = M * B_coeff;
+      const D_coeff = A_coeff + ka * B_coeff;
+      const C_coeff = (b*b*b)*(A_coeff + kb * B_coeff + 1.0);
+      return {A: A_coeff, B: B_coeff, C: C_coeff, D: D_coeff};
+  }
+
+  function fieldAt(x,z,coeffs){
+    const r = Math.sqrt(x*x+z*z);
+    if(r < 1e-9) return {hx:0, hz: -coeffs.D};
+    
+    const cosT = z/r;
+    const sinT = x/r;
+    let hr, ht;
+    const H0 = 1.0;
+    
+    if(r <= a){
+      // Region 3 (inside void)
+      hr = -coeffs.D * cosT;
+      ht = coeffs.D * sinT;
+    } else if (r <= b) {
+      // Region 2 (inside shell)
+      hr = -(coeffs.A - 2*coeffs.B/(r*r*r)) * cosT;
+      ht = (coeffs.A + coeffs.B/(r*r*r)) * sinT;
+    } else {
+      // Region 1 (outside)
+      hr = (H0 + 2*coeffs.C/(r*r*r)) * cosT;
+      ht = (-H0 + coeffs.C/(r*r*r)) * sinT;
+    }
+    
+    const hx = hr*sinT + ht*cosT;
+    const hz = hr*cosT - ht*sinT;
+    return {hx,hz};
+  }
+
+  function traceLine(x0,z0,coeffs,dir,steps,ds){
+    let x=x0,z=z0;
+    const pts=[{x,z}];
+    for(let i=0;i<steps;i++){
+      const f=(px,pz)=>{
+        const v=fieldAt(px,pz,coeffs);
+        const m=Math.hypot(v.hx,v.hz)||1e-9;
+        return {hx:v.hx/m, hz:v.hz/m};
+      };
+      // RK4 integration for smooth field lines
+      const k1=f(x,z);
+      const k2=f(x+k1.hx*ds/2*dir, z+k1.hz*ds/2*dir);
+      const k3=f(x+k2.hx*ds/2*dir, z+k2.hz*ds/2*dir);
+      const k4=f(x+k3.hx*ds*dir, z+k3.hz*ds*dir);
+      const hx=(k1.hx+2*k2.hx+2*k3.hx+k4.hx)/6;
+      const hz=(k1.hz+2*k2.hz+2*k3.hz+k4.hz)/6;
+      x += hx*ds*dir; z += hz*ds*dir;
+      pts.push({x,z});
+      if(Math.abs(x)>Xmax+0.4 || Math.abs(z)>Zmax+0.4) break;
+    }
+    return pts;
+  }
+
+  function render(){
+    const s = parseFloat(muSlider.value);
+    const muR = Math.pow(10, s);
+    const size = canvas.getBoundingClientRect().width;
+    const cx = size/2, cy = size/2;
+    const scale = size/(2*Xmax);
+
+    ctx.clearRect(0,0,size,size);
+
+    const coeffs = getCoeffs(muR);
+
+    // Draw Field Lines
+    const N = 26;
+    for(let i=0;i<=N;i++){
+      const x0 = -Xmax + (Xmax*2)*i/N;
+      const pts = traceLine(x0, -Zmax, coeffs, 1, 800, 0.02);
+      ctx.beginPath();
+      pts.forEach((p,idx)=>{
+        const cxp = cx + p.x*scale, cyp = cy - p.z*scale;
+        if(idx===0) ctx.moveTo(cxp,cyp); else ctx.lineTo(cxp,cyp);
+      });
+      
+      // Determine line color based on proximity to center (visual flare)
+      const dist = Math.abs(x0);
+      if (dist < a) {
+         ctx.strokeStyle = `rgba(255, 194, 89, ${0.4 + 0.3*Math.min(1, muR/10)})`; // lines that get deflected light up
+      } else {
+         ctx.strokeStyle = 'rgba(56,152,255,0.6)';
+      }
+      
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+    }
+
+    // Draw Shell
+    ctx.beginPath();
+    ctx.arc(cx,cy,scale*b,0,Math.PI*2);
+    ctx.arc(cx,cy,scale*a,0,Math.PI*2,true); // Hole
+    const grad = ctx.createRadialGradient(cx,cy,scale*a,cx,cy,scale*b);
+    grad.addColorStop(0,'rgba(15,24,43,1)');
+    grad.addColorStop(1,'rgba(56,152,255,0.3)');
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(56,152,255,0.9)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw Inner Void explicitly
+    ctx.beginPath();
+    ctx.arc(cx,cy,scale*a,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(5,8,16,0.95)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,194,89,0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Readouts
+    const hin = Math.abs(coeffs.D);
+    muVal.textContent = muR>=1000 ? muR.toExponential(1).replace('+','') : muR.toFixed(muR<10?2:0);
+    hinVal.textContent = (hin>=0.01 ? hin.toFixed(3) : hin.toExponential(2)) + '×B₀';
+    shieldVal.textContent = ((1-hin)*100).toFixed(hin<0.01?2:1) + '%';
+  }
+
+  muSlider.addEventListener('input', render);
+  chips.forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const mu = parseFloat(chip.dataset.mu);
+      muSlider.value = Math.log10(mu);
+      render();
+    });
+  });
+
+  window.addEventListener('resize', ()=>{ fitCanvas(); render(); });
+  fitCanvas();
+  render();
+})();
+</script>
+
+</body>
+</html>
