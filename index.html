@@ -412,7 +412,7 @@ input[type=range]::-webkit-slider-thumb:hover{
   <section class="slide" id="slide-5">
     <div class="slide-inner">
       <div class="eyebrow">פיתוח מתמטי</div>
-      <h2 class="slide-title">מממשוואות מקסוול למשוואת לפלס</h2>
+      <h2 class="slide-title">ממשוואות מקסוול למשוואת לפלס</h2>
       <p class="muted">המעבר מפיזיקה למתמטיקה מתבסס על היעדר זרמים חופשיים.</p>
       
       <div style="display:flex; flex-direction:column; gap:1.5rem; margin-top:1rem;">
@@ -489,14 +489,14 @@ input[type=range]::-webkit-slider-thumb:hover{
       <h2 class="slide-title">פתרון 3 אזורים</h2>
       <div class="cols">
         <div style="display:flex;flex-direction:column;gap:1.5rem;">
-          <p>בגלל הסימטריה המרחבית לאורך ציר Z, הפתרון הכללי של משוואת לפלס קורס לפולינומי לז'נדר מסדר ראשון (<span class="tex">l=1</span>):</p>
+          <p>בגלל הסימטריה המרחבית לאורך ציר Z, הפתרון הכללי של משוואת לפלס מצטמצם לפולינום לז'נדר מסדר ראשון (<span class="tex">l=1</span>):</p>
           <div class="eq-box"><span class="tex">\Phi_m(r,\theta) = \left( Ar + \frac{C}{r^2} \right) \cos\theta</span></div>
-          <p class="muted" style="font-size:1.3rem; margin-top:1rem;">החלת 4 תנאי השפה על אזורי הבעיה (מרחב חיצוני, קליפה וחלל פנימי) תספק לנו מערכת של 4 משוואות לינאריות עבור המקדמים A ו-C בכל אזור.</p>
+          <p class="muted" style="font-size:1.3rem; margin-top:1rem;">החלת ארבעת תנאי השפה על אזורי הבעיה (מרחב חיצוני, קליפה וחלל פנימי) תניב מערכת של ארבע משוואות לינאריות עבור המקדמים A ו-C בכל אזור.</p>
         </div>
         
         <div style="display:flex;flex-direction:column;gap:1rem;">
           <div class="panel" style="padding:1.5rem;">
-            <p style="font-size:1.2rem; color:var(--text-muted);">אזור 1 (בחוץ, <span class="tex">r > b</span>):</p>
+            <p style="font-size:1.2rem; color:var(--text-muted);">אזור 1 (המרחב החיצוני, <span class="tex">r > b</span>):</p>
             <div class="eq-box" style="padding:0.8rem; margin-top:0.5rem;"><span class="tex">\Phi_{out} = -H_0 r \cos\theta + \frac{C_{out}}{r^2}\cos\theta</span></div>
           </div>
           <div class="panel" style="padding:1.5rem; border-color:var(--south);">
@@ -541,7 +541,7 @@ input[type=range]::-webkit-slider-thumb:hover{
                 <div class="lbl">יעילות הנחתה</div>
               </div>
             </div>
-            <p class="muted" style="margin-top:1.5rem;font-size:1.2rem; line-height:1.5;">הסימולציה פותרת מתמטית את המשוואות. צפו כיצד קווי השדה <b>נשאבים אל תוך הקליפה</b> מכיוון שהיא מהווה מסלול בעל התנגדות מגנטית (Reluctance) נמוכה יותר, ועוקפים לחלוטין את החלל הפנימי.</p>
+            <p class="muted" style="margin-top:1.5rem;font-size:1.2rem; line-height:1.5;">הסימולציה פותרת את המשוואות באופן אנליטי. צפו כיצד קווי השדה <b>נשאבים אל תוך הקליפה</b> מכיוון שהיא מהווה מסלול בעל התנגדות מגנטית (Reluctance) נמוכה יותר, ועוקפים לחלוטין את החלל הפנימי.</p>
           </div>
         </div>
       </div>
@@ -553,7 +553,7 @@ input[type=range]::-webkit-slider-thumb:hover{
     <div class="slide-inner">
       <div class="eyebrow">המסקנה מהפתרון</div>
       <h2 class="slide-title">ניתוב מחדש של שטף מגנטי</h2>
-      <p class="muted">חישוב עוצמת השדה פנימה <span class="tex">B_{in} = -\mu_0 \nabla \Phi_{in}</span> נותן את התוצאה המקורבת הבאה (עבור <span class="tex">\mu_r \gg 1</span>):</p>
+      <p class="muted">חישוב עוצמת השדה בחלל הפנימי <span class="tex">B_{in} = -\mu_0 \nabla \Phi_{in}</span> מניב את התוצאה המקורבת הבאה (עבור <span class="tex">\mu_r \gg 1</span>):</p>
       
       <div class="eq-box highlight" style="margin: 1.5rem auto; display:inline-flex; padding: 2rem 4rem;">
         <span class="tex" style="font-size: 2.2em;">B_{in} \approx \frac{9}{2\mu_r\left[1 - \left(\frac{a}{b}\right)^3\right]} B_0</span>
@@ -563,7 +563,7 @@ input[type=range]::-webkit-slider-thumb:hover{
         <div class="card north">
           <div class="tag">כלוב פאראדיי קלאסי (נחושת)</div>
           <h3><span class="tex">\mu_r = 1</span></h3>
-          <p style="font-size:1.3rem;">הנוסחה מראה ש- <span class="tex">B_{in} = B_0</span>. נחושת לא עושה דבר לשדות מגנטיים סטטיים. אין כל הגנה, והשדה עובר ללא הפרעה.</p>
+          <p style="font-size:1.3rem;">הנוסחה מראה ש- <span class="tex">B_{in} = B_0</span>. נחושת אינה משפיעה כלל על שדות מגנטיים סטטיים. אין כל הגנה, והשדה עובר ללא הפרעה.</p>
         </div>
         <div class="compare-connector">
           ⇦&nbsp;&nbsp;מסקנה פיזיקלית&nbsp;&nbsp;⇨
@@ -571,7 +571,7 @@ input[type=range]::-webkit-slider-thumb:hover{
         <div class="card south">
           <div class="tag">סיכוך מגנטי פסיבי (Mu-Metal)</div>
           <h3><span class="tex">\mu_r = 100,000</span></h3>
-          <p style="font-size:1.3rem;">החומר <span class="highlight-text">מקריס את קווי השדה אל תוך הקליפה</span>. קווי השטף בוחרים תמיד במסלול ה-Reluctance הנמוך ביותר, ועוקפים את החלל הפנימי לחלוטין.</p>
+          <p style="font-size:1.3rem;">החומר <span class="highlight-text">מנתב את קווי השדה אל תוך הקליפה</span>. קווי השטף בוחרים תמיד במסלול ה-Reluctance הנמוך ביותר, ועוקפים את החלל הפנימי לחלוטין.</p>
         </div>
       </div>
     </div>
