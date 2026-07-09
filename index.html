@@ -461,9 +461,9 @@ input[type=range]::-webkit-slider-thumb:hover{
           <div class="bc-num">3</div>
           <div>
             <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;">
-              <span class="tex">\Phi_{m}</span>
-              <span dir="rtl" style="margin: 0 1rem; font-family: var(--font-body);">רציף ב-</span>
               <span class="tex">r=a, r=b</span>
+              <span dir="rtl" style="margin: 0 1rem; font-family: var(--font-body);">רציף ב-</span>
+              <span class="tex">\Phi_{m}</span>
             </div>
             <div class="bc-caption">רציפות הפוטנציאל הסקלרי בשפות (נובע מרציפות הרכיב המשיקי <span class="tex">H_{tan}</span>).</div>
           </div>
@@ -472,9 +472,9 @@ input[type=range]::-webkit-slider-thumb:hover{
           <div class="bc-num">4</div>
           <div>
             <div class="bc-eq eq-box" style="padding:0.8rem 1.5rem;">
-              <span class="tex">\mu \frac{\partial \Phi_{m}}{\partial r}</span>
-              <span dir="rtl" style="margin: 0 1rem; font-family: var(--font-body);">רציף ב-</span>
               <span class="tex">r=a, r=b</span>
+              <span dir="rtl" style="margin: 0 1rem; font-family: var(--font-body);">רציף ב-</span>
+              <span class="tex">\mu \frac{\partial \Phi_{m}}{\partial r}</span>
             </div>
             <div class="bc-caption">רציפות הרכיב הניצב של השדה המגנטי (<span class="tex">B_{normal}</span>) במעבר בין החומרים.</div>
           </div>
@@ -513,8 +513,37 @@ input[type=range]::-webkit-slider-thumb:hover{
     </div>
   </section>
 
-  <!-- SLIDE 8 - INTERACTIVE FIELD DIAGRAM -->
+  <!-- SLIDE 8 - CONCLUSION -->
   <section class="slide" id="slide-8">
+    <div class="slide-inner">
+      <div class="eyebrow">המסקנה מהפתרון</div>
+      <h2 class="slide-title">ניתוב מחדש של שטף מגנטי</h2>
+      <p class="muted">חישוב עוצמת השדה בחלל הפנימי <span class="tex">B_{in} = -\mu_0 \nabla \Phi_{in}</span> מניב את התוצאה המקורבת הבאה (עבור <span class="tex">\mu_r \gg 1</span>):</p>
+      
+      <div class="eq-box highlight" style="margin: 1.5rem auto; display:inline-flex; padding: 2rem 4rem;">
+        <span class="tex" style="font-size: 2.2em;">B_{in} \approx \frac{9}{2\mu_r\left[1 - \left(\frac{a}{b}\right)^3\right]} B_0</span>
+      </div>
+
+      <div class="compare" style="margin-top:2rem;">
+        <div class="card north">
+          <div class="tag">כלוב פאראדיי קלאסי (נחושת)</div>
+          <h3><span class="tex">\mu_r = 1</span></h3>
+          <p style="font-size:1.3rem;">הנוסחה מראה ש- <span class="tex">B_{in} = B_0</span>. נחושת אינה משפיעה כלל על שדות מגנטיים סטטיים. אין כל הגנה, והשדה עובר ללא הפרעה.</p>
+        </div>
+        <div class="compare-connector">
+          ⇦&nbsp;&nbsp;מסקנה פיזיקלית&nbsp;&nbsp;⇨
+        </div>
+        <div class="card south">
+          <div class="tag">סיכוך מגנטי פסיבי (Mu-Metal)</div>
+          <h3><span class="tex">\mu_r = 100,000</span></h3>
+          <p style="font-size:1.3rem;">החומר <span class="highlight-text">מנתב את קווי השדה אל תוך הקליפה</span>. קווי השטף בוחרים תמיד במסלול ה-Reluctance הנמוך ביותר, ועוקפים את החלל הפנימי לחלוטין.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 - INTERACTIVE FIELD DIAGRAM -->
+  <section class="slide" id="slide-9">
     <div class="slide-inner" style="max-width:1500px;">
       <div class="eyebrow">סימולציית קליפה מגנטית</div>
       <h2 class="slide-title">שנו את הפרמאביליות וצפו ב"ניתוב מחדש" של השטף</h2>
@@ -549,34 +578,6 @@ input[type=range]::-webkit-slider-thumb:hover{
     </div>
   </section>
 
-  <!-- SLIDE 9 - CONCLUSION -->
-  <section class="slide" id="slide-9">
-    <div class="slide-inner">
-      <div class="eyebrow">המסקנה מהפתרון</div>
-      <h2 class="slide-title">ניתוב מחדש של שטף מגנטי</h2>
-      <p class="muted">חישוב עוצמת השדה בחלל הפנימי <span class="tex">B_{in} = -\mu_0 \nabla \Phi_{in}</span> מניב את התוצאה המקורבת הבאה (עבור <span class="tex">\mu_r \gg 1</span>):</p>
-      
-      <div class="eq-box highlight" style="margin: 1.5rem auto; display:inline-flex; padding: 2rem 4rem;">
-        <span class="tex" style="font-size: 2.2em;">B_{in} \approx \frac{9}{2\mu_r\left[1 - \left(\frac{a}{b}\right)^3\right]} B_0</span>
-      </div>
-
-      <div class="compare" style="margin-top:2rem;">
-        <div class="card north">
-          <div class="tag">כלוב פאראדיי קלאסי (נחושת)</div>
-          <h3><span class="tex">\mu_r = 1</span></h3>
-          <p style="font-size:1.3rem;">הנוסחה מראה ש- <span class="tex">B_{in} = B_0</span>. נחושת אינה משפיעה כלל על שדות מגנטיים סטטיים. אין כל הגנה, והשדה עובר ללא הפרעה.</p>
-        </div>
-        <div class="compare-connector">
-          ⇦&nbsp;&nbsp;מסקנה פיזיקלית&nbsp;&nbsp;⇨
-        </div>
-        <div class="card south">
-          <div class="tag">סיכוך מגנטי פסיבי (Mu-Metal)</div>
-          <h3><span class="tex">\mu_r = 100,000</span></h3>
-          <p style="font-size:1.3rem;">החומר <span class="highlight-text">מנתב את קווי השדה אל תוך הקליפה</span>. קווי השטף בוחרים תמיד במסלול ה-Reluctance הנמוך ביותר, ועוקפים את החלל הפנימי לחלוטין.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
 </div>
 
